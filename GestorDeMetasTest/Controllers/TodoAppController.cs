@@ -22,7 +22,7 @@ namespace GestorDeMetasTest.Controllers
         [Route("GetMeta")]
         public JsonResult GetMeta()
         {
-            string query = "SELECT m.*,  ROUND(COALESCE(    (SUM(CASE WHEN t.Estatus = 1 THEN 1 ELSE 0 END) * 100.0) / COUNT(t.IdTarea),       0   ),2) AS porcentaje FROM    dbo.Meta m LEFT JOIN  dbo.Tarea t ON m.IdMeta = t.IdMeta GROUP BY   m.IdMeta, m.Nombre, m.Fecha, m.Estatus";
+            string query = "SELECT m.IdMeta, m.Nombre, m.Fecha, m.Estatus, ROUND(COALESCE((SUM(CASE WHEN t.Estatus = 1 THEN 1 ELSE 0 END) * 100.0) / CASE WHEN COUNT(t.IdTarea) = 0 THEN 1 ELSE COUNT(t.IdTarea) END, 0), 2) AS Porcentaje FROM dbo.Meta m LEFT JOIN  dbo.Tarea t ON m.IdMeta = t.IdMeta  GROUP BY   m.IdMeta, m.Nombre, m.Fecha, m.Estatus";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("todoAppDBCon");
             SqlDataReader myReader;
